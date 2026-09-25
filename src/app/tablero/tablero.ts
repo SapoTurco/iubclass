@@ -83,6 +83,12 @@ export class Tablero {
       lista.map((p) => (p.nombre === nombre ? { ...p, cantidad: p.cantidad + 10 } : p)),
     );
   }
+  
+  agotarProducto(nombre: string) {
+    this.productos.update((lista) =>
+      lista.map((p) => (p.nombre === nombre ? { ...p, cantidad: 0 } : p)),
+    );
+  }
 
   // El objeto $event trae lo que escribió el usuario.
   // TypeScript sabe que todo evento tiene un target, pero no sabe si ese target
@@ -97,3 +103,21 @@ export class Tablero {
     this.filtro.set('');
   }
 }
+
+agotados = computed(() => this.productos().filter((p) => p.cantidad === 0).length);
+
+inventarioBajo = computed(() =>
+  this.productos().some((p) => p.cantidad >= 1 && p.cantidad <= 2),
+);
+
+masCaro = computed(() => {
+  const lista = this.productos();
+  if (lista.length === 0) return null;
+  return lista.reduce((a, b) => (a.precio > b.precio ? a : b));
+});
+
+ordenados = computed(() =>
+  [...this.productos()].sort(
+    (a, b) => b.precio * b.cantidad - a.precio * a.cantidad,
+  ),
+);
