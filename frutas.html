@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puesto de Don Efraín · Inventario del día</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: #f1f5f9;
+  color: #0f172a;
+  padding: 32px 16px;
+}
+
+.contenedor {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.cabecera {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 14px 14px 0 0;
+  padding: 22px 26px;
+}
+
+.cabecera h1 {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.cabecera p {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.tarjeta {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+  padding: 22px 26px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #1e293b;
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 12px 14px;
+}
+
+td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 15px;
+}
+
+tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.nombre {
+  font-weight: 600;
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  font-weight: 600;
+}
+
+.acciones {
+  margin-top: 22px;
+}
+
+.boton {
+  background: #f59e0b;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.boton:hover {
+  background: #d97706;
+}
+
+.boton:disabled {
+  background: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.totales {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.total {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 20px 22px;
+}
+
+.total.etiqueta {
+  background: #1e293b;
+}
+
+.total span {
+  display: block;
+  color: #94a3b8;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.total strong {
+  font-size: 34px;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .totales {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<div class="contenedor">
+
+  <div class="cabecera">
+    <h1>Puesto de Don Efraín</h1>
+    <p>Inventario del día · plaza de mercado</p>
+  </div>
+
+  <div class="tarjeta">
+    <table>
+      <thead>
+        <tr>
+          <th>FRUTA</th>
+          <th class="num">PRECIO</th>
+          <th class="num">CANTIDAD</th>
+          <th class="num">SUBTOTAL</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo"></tbody>
+    </table>
+
+    <div class="aviso" id="mensaje" hidden>Jornada de venta mayorista</div>
+
+    <div class="acciones">
+      <button class="boton" id="venderMango">Vender un mango</button>
+    </div>
+  </div>
+
+  <div class="totales">
+    <div class="total">
+      <span>TOTAL EN DINERO</span>
+      <strong id="totalDinero">$ 0</strong>
+    </div>
+    <div class="total etiqueta">
+      <span>UNIDADES EN EL PUESTO</span>
+      <strong id="totalUnidades">0</strong>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var productos = [
+  { nombre: "Mango",   precio: 1800, cantidad: 12 },
+  { nombre: "Guayaba", precio: 1200, cantidad: 8 },
+  { nombre: "Patilla", precio: 6500, cantidad: 2 },
+  { nombre: "Maracuyá", precio: 3400, cantidad: 5 },
+  { nombre: "Níspero", precio: 2900, cantidad: 4 }
+];
+
+function miles(valor) {
+  return valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function subtotalDe(fruta) {
+  return fruta.precio * fruta.cantidad;
+}
+
+function renderizarTabla() {
+  var cuerpo = document.getElementById("cuerpo");
+  var filas = "";
+
+  for (var i = 0; i < productos.length; i++) {
+    var fruta = productos[i];
+    filas +=
+      "<tr>" +
+        "<td class='nombre'>" + fruta.nombre + "</td>" +
+        "<td class='num'>" + miles(fruta.precio) + "</td>" +
+        "<td class='num'>" + fruta.cantidad + "</td>" +
+        "<td class='num'>" + miles(subtotalDe(fruta)) + "</td>" +
+      "</tr>";
+  }
+
+  cuerpo.innerHTML = filas;
+}
+
+function totalEnDinero() {
+  var total = 0;
+  for (var i = 0; i < productos.length; i++) {
+    total = total + subtotalDe(productos[i]);
+  }
+  return total;
+}
+
+function totalDeUnidades() {
+  var unidades = 0;
+  for (var i = 0; i < productos.length; i++) {
+    unidades = unidades + productos[i].cantidad;
+  }
+  return unidades;
+}
+
+function actualizarMensaje() {
+  var mensaje = document.getElementById("mensaje");
+  if (totalEnDinero() > 50000) {
+    mensaje.hidden = false;
+  } else {
+    mensaje.hidden = true;
+  }
+}
+
+function actualizarTotales() {
+  document.getElementById("totalDinero").textContent = "$ " + miles(totalEnDinero());
+  document.getElementById("totalUnidades").textContent = totalDeUnidades();
+}
+
+function actualizar() {
+  renderizarTabla();
+  actualizarTotales();
+  actualizarMensaje();
+}
+
+function venderUnMango() {
+  for (var i = 0; i < productos.length; i++) {
+    if (productos[i].nombre === "Mango" && productos[i].cantidad > 0) {
+      productos[i].cantidad = productos[i].cantidad - 1;
+    }
+  }
+
+  var boton = document.getElementById("venderMango");
+  if (productos[0].cantidad === 0) {
+    boton.disabled = true;
+    boton.textContent = "No queda mango";
+  }
+
+  actualizar();
+}
+
+document.getElementById("venderMango").addEventListener("click", venderUnMango);
+
+actualizar();
+</script>
+</body>
+</html>
