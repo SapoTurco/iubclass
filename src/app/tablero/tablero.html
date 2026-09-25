@@ -84,6 +84,14 @@
           >
             Vender todo
           </button>
+          <button
+          type="button"
+          class="ml-1 rounded-md bg-red-100 px-3 py-1 text-xs font-bold text-red-700 disabled:opacity-30"
+          [disabled]="p.cantidad === 0"
+          (click)="agotarProducto(p.nombre)"
+        >
+          Vender todo
+        </button>
           </td>
         </tr>
       } @empty {
@@ -119,6 +127,55 @@
     <p class="text-sm font-semibold text-emerald-900">Jornada de venta mayorista</p>
   </div>
 }
+
+<div class="mt-6 grid gap-3 sm:grid-cols-3">
+  <div class="rounded-xl border border-slate-200 bg-white px-5 py-4">
+    <div class="text-xs uppercase tracking-widest text-slate-500">Productos agotados</div>
+    <div class="mt-1 text-3xl font-bold text-slate-900">{{ agotados() }}</div>
+  </div>
+
+  <div class="rounded-xl border border-slate-200 bg-white px-5 py-4">
+    <div class="text-xs uppercase tracking-widest text-slate-500">Inventario bajo</div>
+    @if (inventarioBajo()) {
+      <div class="mt-1 text-lg font-bold text-amber-600">Sí</div>
+    } @else {
+      <div class="mt-1 text-lg font-bold text-slate-400">No</div>
+    }
+  </div>
+
+  <div class="rounded-xl border border-slate-200 bg-white px-5 py-4">
+    <div class="text-xs uppercase tracking-widest text-slate-500">Producto más caro</div>
+    @if (masCaro(); as caro) {
+      <div class="mt-1 text-3xl font-bold text-slate-900">{{ caro.nombre }}</div>
+      <div class="text-sm text-slate-500">{{ caro.precio }}</div>
+    } @else {
+      <div class="mt-1 text-3xl font-bold text-slate-400">—</div>
+    }
+  </div>
+</div>
+
+<div class="mt-4 overflow-x-auto rounded-xl border border-slate-200">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-slate-800 text-xs uppercase tracking-wider text-white">
+      <tr>
+        <th class="px-4 py-3">#</th>
+        <th class="px-4 py-3">Producto</th>
+        <th class="px-4 py-3">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (p of ordenados(); track p.nombre; let i = $index) {
+        <tr class="border-t border-slate-100">
+          <td class="px-4 py-3 text-slate-400">{{ i + 1 }}</td>
+          <td class="px-4 py-3 font-semibold text-slate-900">{{ p.nombre }}</td>
+          <td class="px-4 py-3 font-semibold text-slate-900">
+            {{ p.precio * p.cantidad }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
 
 <p class="mt-4 text-xs text-slate-400">
   Mostrando {{ visibles().length }} de {{ productos().length }} productos.
