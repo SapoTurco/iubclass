@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Tablero } from './tablero/tablero';
+import { Frutas } from './frutas/frutas';
 import { Acerca } from './acerca/acerca';
 import { S03 } from './s03/s03';
 
@@ -7,8 +8,9 @@ import { S03 } from './s03/s03';
 // Esto se ve completo en la S09. Hoy solo dejamos el esqueleto para que la
 // aplicación tenga dónde crecer: dos vistas y una redirección.
 export const routes: Routes = [
-  { path: '', redirectTo: 'tablero', pathMatch: 'full' },
+  { path: '', redirectTo: 'frutas', pathMatch: 'full' },
   { path: 'tablero', component: Tablero },
+  { path: 'frutas', component: Frutas },
   { path: 's03', component: S03 }, // ejemplos de la sesión S03
   { path: 'acerca', component: Acerca },
   { path: '**', redirectTo: 'tablero' }, // cualquier otra URL vuelve al tablero
