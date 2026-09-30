@@ -1,45 +1,63 @@
-<main class="mx-auto max-w-4xl p-6">
-    <h1 class="text-2xl font-bold">
-      Taller2 · Inventario · {{ hoy | date:'fullDate' }}
-    </h1>
-  
-    <nav class="my-4 flex gap-2">
-      @for (categoria of categorias; track categoria) {
-        <button class="rounded border px-3 py-1" (click)="filtro.set(categoria)">
-          {{ categoria }}
-        </button>
-      }
-    </nav>
-  
-    <table class="w-full text-left">
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Precio</th>
-          <th>Existencias</th>
-          <th>Estado</th>
+<h2 class="text-2xl font-bold text-slate-900">Inventario de productos</h2>
+<p class="mt-1 text-sm text-slate-500">
+  {{ hoy | date:'fullDate' }}
+</p>
+
+<nav class="mt-6 flex flex-wrap gap-2" aria-label="Filtrar por categoría">
+    @for (categoria of categorias; track categoria) {
+      <button
+        type="button"
+        class="rounded-lg px-4 py-2 text-sm font-bold text-slate-900 transition-colors"
+        [class]="filtro() === categoria
+          ? 'bg-slate-900 text-white'
+          : 'bg-amber-400 hover:bg-slate-300'"
+        [attr.aria-pressed]="filtro() === categoria"
+        (click)="filtro.set(categoria)">
+        {{ categoria }}
+      </button>
+    }
+  </nav>
+
+<div class="mt-4 overflow-x-auto rounded-xl border border-slate-200">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-slate-900 text-xs uppercase tracking-wider text-white">
+      <tr>
+        <th class="px-4 py-3">Producto</th>
+        <th class="px-4 py-3">Precio</th>
+        <th class="px-4 py-3">Existencias</th>
+        <th class="px-4 py-3">Estado</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (producto of filas(); track producto.nombre) {
+        <tr
+          class="border-t border-slate-100"
+          [class.agotado]="producto.estado === 'agotado'">
+          <td class="px-4 py-3 font-semibold text-slate-900">
+            {{ producto.nombre }}
+          </td>
+          <td class="px-4 py-3 text-slate-600">
+            {{ producto.precio | currency:'COP':'symbol-narrow':'1.0-0':'es-CO' }}
+          </td>
+          <td class="px-4 py-3 text-slate-600">
+            {{ producto.cantidad | unidades }}
+          </td>
+          <td class="px-4 py-3">
+            @switch (producto.estado) {
+              @case ('agotado') { Agotado }
+              @case ('bajo') { Bajo }
+              @case ('disponible') { Disponible }
+            }
+          </td>
         </tr>
-      </thead>
-  
-      <tbody>
-        @for (producto of filas(); track producto.nombre) {
-          <tr [class.agotado]="producto.estado === 'agotado'">
-            <td>{{ producto.nombre }}</td>
-            <td>{{ producto.precio | currency:'COP':'symbol-narrow':'1.0-0':'es-CO' }}</td>
-            <td>{{ producto.cantidad | unidades }}</td>
-            <td>
-              @switch (producto.estado) {
-                @case ('agotado') { Agotado }
-                @case ('bajo') { Bajo }
-                @case ('disponible') { Disponible }
-              }
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="4">No hay productos en esta categoría</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </main>
+      } @empty {
+        <tr class="border-t border-slate-100">
+          <td colspan="4" class="px-4 py-4 text-center text-slate-500">
+            No hay productos en esta categoría
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
