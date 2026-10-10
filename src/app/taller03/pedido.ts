@@ -1,11 +1,10 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { Linea, ResumenPedido } from './resumen-pedido';
 import { Producto, TarjetaProducto } from './tarjeta-producto';
 
 @Component({
   selector: 'app-pedido',
-  imports: [CurrencyPipe, TarjetaProducto, ResumenPedido],
+  imports: [TarjetaProducto, ResumenPedido],
   template: `
     <section class="space-y-8">
       <header>
